@@ -1,0 +1,13 @@
+streamlit
+pandas
+numpy
+plotly
+matplotlib
+seaborn
+google-generativeai
+python-dotenv
+openpyxl
+xlrd
+langchain
+langchain-google-genai
+python-multipart
