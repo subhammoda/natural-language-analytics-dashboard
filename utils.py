@@ -284,15 +284,6 @@ def get_chart_recommendations(data_info: Dict) -> List[Dict]:
             "priority": "high"
         })
     
-    # Distribution recommendation
-    if numeric_cols:
-        recommendations.append({
-            "type": "histogram",
-            "title": f"Distribution of {numeric_cols[0]}",
-            "description": f"Understand the distribution of {numeric_cols[0]}",
-            "priority": "medium"
-        })
-    
     # Category comparison
     if categorical_cols and numeric_cols:
         recommendations.append({
