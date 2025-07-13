@@ -2,7 +2,7 @@ import os
 import json
 from typing import Dict, List, Optional, Tuple
 import streamlit as st
-import google.generativeai as genai
+from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,7 +13,9 @@ class LLMAnalyzer:
     def __init__(self):
         api_key = os.getenv('GEMINI_API_KEY')
         if api_key:
-            genai.configure(api_key=api_key)
+            self.client = genai.Client(api_key=api_key)
+        else:
+            self.client = None
         self.model = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash-001')
         self.temperature = float(os.getenv('TEMPERATURE', '0.7'))
         self.max_tokens = int(os.getenv('MAX_TOKENS', '2000'))
@@ -30,20 +32,25 @@ class LLMAnalyzer:
             Dict: Chart specifications including chart type, columns, and parameters
         """
         try:
+            if not self.client:
+                st.error("Gemini API client not initialized. Please check your API key.")
+                return self._get_default_chart_spec(data_info)
+            
             # Create a comprehensive prompt for the LLM
             system_prompt = self._create_system_prompt(data_info)
             
-            # Configure the model
-            model = genai.GenerativeModel(
-                model_name=self.model,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=self.temperature,
-                    max_output_tokens=self.max_tokens
-                )
-            )
+            # Prepare the content for the model
+            content = f"{system_prompt}\n\nUser request: {user_prompt}"
             
-            # Generate response
-            response = model.generate_content([system_prompt, user_prompt])
+            # Generate response using the new API
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=content,
+                config={
+                    "temperature": self.temperature,
+                    "max_output_tokens": self.max_tokens
+                }
+            )
             
             # Parse the response
             chart_spec = self._parse_llm_response(response.text)
@@ -185,20 +192,15 @@ Generate a 2-3 sentence description that explains:
 Keep the description clear and accessible to non-technical users.
 """
             
-            # Configure the model
-            model = genai.GenerativeModel(
-                model_name=self.model,
-                generation_config=genai.types.GenerationConfig(
-                    temperature=0.5,
-                    max_output_tokens=150
-                )
+            # Generate response using the new API
+            response = self.client.models.generate_content(
+                model=self.model,
+                contents=prompt,
+                config={
+                    "temperature": 0.5,
+                    "max_output_tokens": 150
+                }
             )
-            
-            # Generate response
-            response = model.generate_content([
-                "You are a data visualization expert who creates clear, informative descriptions of charts.",
-                prompt
-            ])
             
             return response.text.strip()
             
