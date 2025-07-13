@@ -16,7 +16,7 @@ class LLMAnalyzer:
             self.client = genai.Client(api_key=api_key)
         else:
             self.client = None
-        self.model = os.getenv('GEMINI_MODEL', 'gemini-2.0-flash-001')
+        self.model = os.getenv('GEMINI_MODEL', 'gemini-2.5-flash')
         self.temperature = float(os.getenv('TEMPERATURE', '0.7'))
         self.max_tokens = int(os.getenv('MAX_TOKENS', '2000'))
     
