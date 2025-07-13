@@ -40,7 +40,7 @@ pip install -r requirements.txt
 If you encounter any issues, you can install packages individually:
 
 ```bash
-pip install streamlit pandas numpy plotly matplotlib seaborn google-generativeai python-dotenv openpyxl xlrd langchain langchain-google-genai python-multipart
+pip install streamlit pandas numpy plotly matplotlib seaborn google-genai python-dotenv openpyxl xlrd langchain langchain-google-genai python-multipart
 ```
 
 ### Step 3: Set Up Environment Variables
@@ -57,7 +57,7 @@ GEMINI_API_KEY=your_gemini_api_key_here
 
 3. (Optional) Configure additional settings:
 ```
-GEMINI_MODEL=gemini-2.0-flash-001
+GEMINI_MODEL=gemini-2.5-flash
 TEMPERATURE=0.7
 MAX_TOKENS=2000
 DEBUG=False
@@ -115,7 +115,6 @@ natural-language-analytics-dashboard/
 - **Plotly**: Interactive visualizations
 - **Google Gemini**: Natural language processing
 - **LangChain**: LLM orchestration
-- **Matplotlib/Seaborn**: Additional charting capabilities
 
 ## Troubleshooting
 
@@ -181,7 +180,7 @@ To add new chart types, extend the `ChartGenerator` class:
 
 You can customize the application behavior by setting these environment variables:
 
-- `GEMINI_MODEL`: "gemini-2.0-flash-001"
+- `GEMINI_MODEL`: "gemini-2.5-flash"
 - `TEMPERATURE`: Control creativity vs. consistency (0.0-1.0)
 - `MAX_TOKENS`: Limit response length
 - `DEBUG`: Enable debug mode for more verbose output
