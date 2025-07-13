@@ -114,7 +114,6 @@ natural-language-analytics-dashboard/
 - **Pandas**: Data manipulation and analysis
 - **Plotly**: Interactive visualizations
 - **Google Gemini**: Natural language processing
-- **LangChain**: LLM orchestration
 
 ## Troubleshooting
 
