@@ -89,7 +89,10 @@ class ChartGenerator:
                 else:
                     agg_func = getattr(data.groupby(x_axis)[y_axis], aggregation)
                     processed_data = agg_func().reset_index()
-            
+        # Ensure processed_data is defined before further use
+        if 'processed_data' not in locals():
+            processed_data = data.copy()
+        
         # Convert date columns to datetime if they exist
         date_columns = []
         for col in processed_data.columns:
@@ -128,10 +131,6 @@ class ChartGenerator:
         # Limit results if specified
         if limit and limit > 0:
             processed_data = processed_data.head(limit)
-        
-        # If no aggregation was performed, use original data
-        if 'processed_data' not in locals():
-            processed_data = data.copy()
         
         return processed_data
     
