@@ -258,19 +258,31 @@ def main():
                                 return
                             
                             # Generate chart
-                            chart_fig = st.session_state.chart_generator.create_chart(data, chart_spec)
-                            st.session_state.current_chart = (chart_spec, chart_fig)
-                            
-                            # Add to history
-                            chart_summary = create_chart_summary(chart_spec, data_summary)
-                            st.session_state.chart_history.append({
-                                'timestamp': datetime.now(),
-                                'prompt': user_prompt,
-                                'spec': chart_spec,
-                                'summary': chart_summary
-                            })
-                            
-                            st.success("✅ Chart generated successfully!")
+                            try:
+                                chart_fig = st.session_state.chart_generator.create_chart(data, chart_spec)
+                                # Check if the chart is empty by inspecting annotations
+                                is_empty_chart = False
+                                if hasattr(chart_fig, 'layout') and hasattr(chart_fig.layout, 'annotations'):
+                                    for ann in chart_fig.layout.annotations or []:
+                                        if 'No data available for this chart' in ann.text:
+                                            is_empty_chart = True
+                                            break
+                                if is_empty_chart:
+                                    st.error("❌ Unable to generate the requested chart.\n\n**Suggestions:**\n- Check that your prompt specifies valid column names present in your data.\n- Try a different chart type or prompt.\n- Ensure your data has enough numeric or categorical columns for the chosen chart type.\n- For violin/box/histogram, make sure you have at least one numeric column.\n- For bar/line, ensure you have both categorical and numeric columns.")
+                                    return
+                                st.session_state.current_chart = (chart_spec, chart_fig)
+                                # Add to history
+                                chart_summary = create_chart_summary(chart_spec, data_summary)
+                                st.session_state.chart_history.append({
+                                    'timestamp': datetime.now(),
+                                    'prompt': user_prompt,
+                                    'spec': chart_spec,
+                                    'summary': chart_summary
+                                })
+                                st.success("✅ Chart generated successfully!")
+                            except Exception as e:
+                                st.error(f"❌ An error occurred while generating the chart: {str(e)}\n\n**Suggestions:**\n- Check your prompt for typos or invalid column names.\n- Try a different chart type.\n- Ensure your data is not empty and has the required columns.")
+                                return
                     else:
                         st.warning("Please enter a description of the chart you want to see.")
             
